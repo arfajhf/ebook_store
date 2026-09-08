@@ -1,0 +1,6 @@
+BEGIN;
+
+DROP TABLE IF EXISTS ebooks;
+DROP TABLE IF EXISTS categories;
+
+COMMIT;

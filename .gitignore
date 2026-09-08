@@ -1,0 +1,15 @@
+# Backend
+backend/bin/
+backend/.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend-js-backup/
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
