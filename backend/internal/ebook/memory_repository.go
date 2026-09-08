@@ -51,3 +51,22 @@ func (repository *memoryRepository) FindAll(
 ) ([]Ebook, error) {
 	return repository.ebooks, nil
 }
+
+func (repository *memoryRepository) FindBySlug(
+	ctx context.Context,
+	slug string,
+) (Ebook, error) {
+	select {
+	case <-ctx.Done():
+		return Ebook{}, ctx.Err()
+	default:
+	}
+
+	for _, item := range repository.ebooks {
+		if item.Slug == slug {
+			return item, nil
+		}
+	}
+
+	return Ebook{}, ErrNotFound
+}

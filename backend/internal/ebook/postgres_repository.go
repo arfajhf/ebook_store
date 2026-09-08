@@ -2,8 +2,10 @@ package ebook
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -77,4 +79,56 @@ func (repository *postgresRepository) FindAll(
 	}
 
 	return ebooks, nil
+}
+
+func (repository *postgresRepository) FindBySlug(
+	ctx context.Context,
+	slug string,
+) (Ebook, error) {
+	const query = `
+		SELECT
+			e.id,
+			e.title,
+			e.slug,
+			e.author,
+			c.name,
+			e.description,
+			e.price,
+			COALESCE(e.cover_path, '')
+		FROM ebooks AS e
+		INNER JOIN categories AS c
+			ON c.id = e.category_id
+		WHERE e.slug = $1
+			AND e.status = 'published'
+		LIMIT 1
+	`
+
+	var item Ebook
+	var coverPath string
+
+	err := repository.database.QueryRow(ctx, query, slug).Scan(
+		&item.ID,
+		&item.Title,
+		&item.Slug,
+		&item.Author,
+		&item.Category,
+		&item.Description,
+		&item.Price,
+		&coverPath,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return Ebook{}, ErrNotFound
+		}
+
+		return Ebook{}, fmt.Errorf("query ebook by slug: %w", err)
+	}
+
+	item.IsFree = item.Price == 0
+
+	if coverPath != "" {
+		item.CoverURL = "/media/" + coverPath
+	}
+
+	return item, nil
 }

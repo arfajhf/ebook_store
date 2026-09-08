@@ -17,3 +17,10 @@ func (service *Service) GetAll(
 ) ([]Ebook, error) {
 	return service.repository.FindAll(ctx)
 }
+
+func (service *Service) GetBySlug(
+	ctx context.Context,
+	slug string,
+) (Ebook, error) {
+	return service.repository.FindBySlug(ctx, slug)
+}

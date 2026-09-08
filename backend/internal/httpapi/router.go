@@ -14,6 +14,7 @@ func NewRouter(ebookHandler *ebook.Handler) *gin.Engine {
 	{
 		api.GET("/health", health.Check)
 		api.GET("/ebooks", ebookHandler.GetAll)
+		api.GET("/ebooks/:slug", ebookHandler.GetBySlug)
 	}
 
 	return router
