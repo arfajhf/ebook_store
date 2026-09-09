@@ -14,3 +14,8 @@ export interface EbookListResponse {
   status: string
   data: Ebook[]
 }
+
+export interface EbookDetailResponse {
+  status: string
+  data: Ebook
+}

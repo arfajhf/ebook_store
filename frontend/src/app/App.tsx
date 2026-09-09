@@ -1,7 +1,8 @@
-import { EbookListPage } from '../features/ebooks/pages/EbookListPage'
+import { RouterProvider } from 'react-router/dom'
+import { router } from './router'
 
 function App() {
-  return <EbookListPage />
+  return <RouterProvider router={router} />
 }
 
 export default App

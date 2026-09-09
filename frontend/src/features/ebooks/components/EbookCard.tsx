@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { formatRupiah } from '../../../shared/utils/currency'
 import type { Ebook } from '../types/ebook'
 
@@ -44,7 +45,9 @@ export function EbookCard({ ebook }: EbookCardProps) {
             {ebook.is_free ? 'Gratis' : formatRupiah(ebook.price)}
           </strong>
 
-          <button type="button">Lihat Detail</button>
+          <Link to={`/ebooks/${ebook.slug}`} className="ebook-card__detail-link">
+            Lihat Detail
+          </Link>
         </div>
       </div>
     </article>
