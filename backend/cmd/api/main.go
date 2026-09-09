@@ -5,10 +5,12 @@ import (
 	"log"
 	"time"
 
+	"ebook-store/backend/internal/auth"
 	"ebook-store/backend/internal/config"
 	"ebook-store/backend/internal/ebook"
 	"ebook-store/backend/internal/httpapi"
 	"ebook-store/backend/internal/platform/database"
+	"ebook-store/backend/internal/platform/password"
 )
 
 func main() {
@@ -38,7 +40,18 @@ func main() {
 	ebookService := ebook.NewService(ebookRepository)
 	ebookHandler := ebook.NewHandler(ebookService)
 
-	router := httpapi.NewRouter(ebookHandler)
+	passwordHasher := password.NewHasher()
+	authRepository := auth.NewPostgresRepository(databasePool)
+	authService := auth.NewService(
+		authRepository,
+		passwordHasher,
+	)
+	authHandler := auth.NewHandler(authService)
+
+	router := httpapi.NewRouter(
+		ebookHandler,
+		authHandler,
+	)
 
 	if err := router.Run(":" + cfg.AppPort); err != nil {
 		log.Fatalf("failed to start server: %v", err)
